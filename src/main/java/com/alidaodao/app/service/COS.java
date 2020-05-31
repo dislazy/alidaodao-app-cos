@@ -8,6 +8,8 @@ import com.alidaodao.app.util.IOUtils;
 import com.qcloud.cos.http.HttpMethodName;
 import com.qcloud.cos.model.*;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,8 +22,11 @@ import java.util.List;
  * @author Jack
  * @date 2020/2/23 22:05
  */
-public class COS extends AbsCOS {
-    public COS() {
+public class COS extends AbstractCos {
+
+    private static final Logger logger = LoggerFactory.getLogger(COS.class);
+
+    private COS() {
     }
 
     public COS(CosConfig cosConfig) {
@@ -66,7 +71,7 @@ public class COS extends AbsCOS {
             try {
                 l = (long) is.available();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("[putFile]error :", e);
             }
             if (l == null) {
                 return putObjectResult;
@@ -83,7 +88,7 @@ public class COS extends AbsCOS {
         try (InputStream is = IOUtils.byteToInputStream(bytes)) {
             putObjectResult = putFile(finalKey, is, meta);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[putFile]error :", e);
         }
         return putObjectResult;
     }
@@ -133,7 +138,7 @@ public class COS extends AbsCOS {
         try (InputStream in = IOUtils.byteToInputStream(bytes)) {
             return appendFile(finalKey, in, meta, position);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[appendFile]error :", e);
         }
         return null;
     }

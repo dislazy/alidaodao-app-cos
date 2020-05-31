@@ -7,6 +7,8 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.*;
 import com.tencent.cloud.CosStsClient;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,16 +22,18 @@ import java.util.TreeMap;
  * @author bosong
  * @date 2020/2/23 21:57
  */
-public abstract class AbsCOS implements ICOS {
+public abstract class AbstractCos implements ICOS {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCos.class);
 
     protected CosConfig cosConfig;
 
     private COSClient cosClient;
 
-    public AbsCOS() {
+    public AbstractCos() {
     }
 
-    public AbsCOS(CosConfig cosConfig) {
+    public AbstractCos(CosConfig cosConfig) {
         this.cosConfig = cosConfig;
         if (cosConfig != null) {
             this.cosClient = cosConfig.generateClient();
@@ -54,12 +58,12 @@ public abstract class AbsCOS implements ICOS {
         try {
             putObjectResult = getCosClient().putObject(putObjectRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[putFile]error: ",e);
         } finally {
             try {
                 putObjectRequest.getInputStream().close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("[putFile]error: ",e);
             }
         }
         return putObjectResult;
@@ -73,12 +77,12 @@ public abstract class AbsCOS implements ICOS {
         try {
             appendObjectResult = cosClient.appendObject(appendObjectRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[appendFile]error: ",e);
         } finally {
             try {
                 appendObjectRequest.getInputStream().close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("[appendFile]error: ",e);
             }
         }
         return appendObjectResult;
@@ -93,7 +97,7 @@ public abstract class AbsCOS implements ICOS {
         try {
             oSSObject = cosClient.getObject(getObjectRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[getFile]error: ",e);
         }
         return oSSObject;
     }
@@ -106,7 +110,7 @@ public abstract class AbsCOS implements ICOS {
         try {
             objectMetadata = cosClient.getObjectMetadata(request);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[getObjectMetadata]error: ",e);
         }
         return objectMetadata;
     }
@@ -120,7 +124,7 @@ public abstract class AbsCOS implements ICOS {
             cosClient.deleteObject(genericRequest);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[delFile]error: ",e);
         }
         return false;
     }
@@ -133,7 +137,7 @@ public abstract class AbsCOS implements ICOS {
         try {
             copyObjectResult = cosClient.copyObject(copyObjectRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[copyFile]error: ",e);
         }
         return copyObjectResult;
     }
@@ -156,7 +160,7 @@ public abstract class AbsCOS implements ICOS {
         try {
             return cosClient.doesObjectExist(cosConfig.getBucketName(), key);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[doesObjectExist]error: ",e);
         }
         return false;
     }
@@ -190,7 +194,7 @@ public abstract class AbsCOS implements ICOS {
         try {
             return cosClient.generatePresignedUrl(req).toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[generatePresignedUrl]error: ",e);
         }
         return null;
     }
@@ -235,8 +239,6 @@ public abstract class AbsCOS implements ICOS {
             config.put("allowActions", allowActions);
 
             credential = CosStsClient.getCredential(config);
-            //成功返回临时密钥信息，如下打印密钥信息
-            System.out.println(credential);
         } catch (Exception e) {
             //失败抛出异常
             throw new IllegalArgumentException("no valid secret !");

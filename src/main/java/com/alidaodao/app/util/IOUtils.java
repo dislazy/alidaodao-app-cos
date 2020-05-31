@@ -5,12 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 /**
- *
- * @desc io帮助类
  * @author Jack
+ * @desc io帮助类
  * @date 2020/2/23 22:23
  */
 public class IOUtils {
+
     static int BUFFER_SIZE = 1024;
 
     public static String inputStreamToString(InputStream in, String encoding) throws Exception {

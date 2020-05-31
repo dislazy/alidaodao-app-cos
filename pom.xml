@@ -29,12 +29,13 @@
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
-            <version>5.6.16</version>
+            <version>5.6.23</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.tencent.cloud/cos-sts-java -->
         <dependency>
             <groupId>com.tencent.cloud</groupId>
             <artifactId>cos-sts-java</artifactId>
-            <version>3.0.6</version>
+            <version>3.0.7</version>
         </dependency>
     </dependencies>
 

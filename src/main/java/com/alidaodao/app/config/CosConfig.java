@@ -18,8 +18,6 @@ public class CosConfig {
 
     private String accessKey;
 
-    private String appId;
-
     private String region;
 
     private String ossHost;
@@ -68,14 +66,6 @@ public class CosConfig {
         this.bucketName = bucketName;
     }
 
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
     public String getCdnHost() {
         return cdnHost;
     }
@@ -85,10 +75,6 @@ public class CosConfig {
     }
 
     public COSClient generateClient() {
-        if (StringUtils.isBlank(appId)) {
-            return new COSClient(new BasicCOSCredentials(accessId, accessKey), new ClientConfig(new Region(region)));
-        } else {
-            return new COSClient(new BasicCOSCredentials(appId, accessId, accessKey), new ClientConfig(new Region(region)));
-        }
+        return new COSClient(new BasicCOSCredentials(accessId, accessKey), new ClientConfig(new Region(region)));
     }
 }
